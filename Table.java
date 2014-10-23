@@ -1,4 +1,4 @@
-package Helpers;
+package JavaUtils;
 
 
 import models.TableData;
