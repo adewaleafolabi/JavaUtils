@@ -1,8 +1,8 @@
-package JavaUtils;
-
+package Helpers;
 
 
 import models.TableData;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +17,7 @@ public class Table {
 
     private final String[] header;
     private final List<? extends TableData> tableData;
-    private final List<String[]> tableDataX = new ArrayList<>();
+    private final List<String[]> tableDataX = new ArrayList<String[]>();
     private final Map<String, String> htmlArgs;
     private final String TAG_NEW_LINE = "\n";
     private final String TAB = "\t";
@@ -31,6 +31,7 @@ public class Table {
     private final String TAG_TD_CLOSE = "</td>";
     private final String TAG_NBSPC = "&nbsp;";
     private int tdCount = 0;
+    private StringBuilder builder;
 
 
     public Table(String[] header, Map<String, String> htmlArgs, List<? extends TableData> tableData) {
@@ -40,6 +41,7 @@ public class Table {
         this.tdCount = this.header.length;
 
         prepData();
+        builder = new StringBuilder();
     }
 
     /**
@@ -54,33 +56,24 @@ public class Table {
 
     /**
      * Generates the table tag and the html arguments
-     *
-     * @return String
      */
-    private String createOpening() {
-        StringBuilder builder = new StringBuilder();
+    private void createOpening() {
+
         builder.append("<table ");
         for (Map.Entry<String, String> entry : htmlArgs.entrySet()) {
             builder.append(entry.getKey());
             builder.append("='");
             builder.append(entry.getValue());
             builder.append("' ");
-
-
         }
         builder.append(">");
-        return builder.toString();
-
     }
 
     /**
      * Generates the table head section
-     *
-     * @return String
      */
-    private String createHeader() {
+    private void createHeader() {
 
-        StringBuilder builder = new StringBuilder();
         builder.append(TAG_NEW_LINE)
                 .append(TAB)
                 .append(TAG_TH_OPEN)
@@ -88,7 +81,6 @@ public class Table {
                 .append(TAB)
                 .append(TAG_TR_OPEN)
                 .append(TAG_NEW_LINE);
-
 
         for (String item : this.header) {
             builder.append(TAB)
@@ -103,16 +95,14 @@ public class Table {
                 .append(TAG_NEW_LINE)
                 .append(TAG_TH_CLOSE)
                 .append(TAG_NEW_LINE);
-        return builder.toString();
+
     }
 
     /**
      * Generates the table body section
-     *
-     * @return String
      */
-    private String createBody() {
-        StringBuilder builder = new StringBuilder();
+    private void createBody() {
+
         builder.append(TAG_NEW_LINE)
                 .append(TAG_TBODY_OPEN)
                 .append(TAG_NEW_LINE);
@@ -131,6 +121,7 @@ public class Table {
                         .append(TAB)
                         .append(TAG_TD_OPEN);
                 try {
+                    //Possible ArrayIndexOutOfBounds Exception
                     builder.append(item[i]);
                 } catch (Exception exp) {
                     builder.append(TAG_NBSPC);
@@ -143,18 +134,13 @@ public class Table {
                     .append(TAG_NEW_LINE);
         }
         builder.append(TAG_TBODY_CLOSE).append(TAG_NEW_LINE);
-
-        return builder.toString();
-
     }
 
     /**
      * Generates the Tables closing tags
-     *
-     * @return String
      */
-    private String createClosing() {
-        return "</table>";
+    private void createClosing() {
+        builder.append("</table>");
     }
 
     /**
@@ -163,10 +149,12 @@ public class Table {
      * @return String
      */
     public String render() {
-
-        return createOpening() + createHeader() + createBody() + createClosing();
+        createOpening();
+        createHeader();
+        createBody();
+        createClosing();
+        return builder.toString();
     }
 
 
 }
-
